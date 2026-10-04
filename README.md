@@ -10,24 +10,28 @@ In Xcode, select **File → Add Package Dependencies**, enter:
 https://github.com/lovigin/analytics-ios-sdk
 ```
 
-Choose version **0.1.0** or later and add the `LoviginAnalytics` product to your app target. The repository must contain this package at its root and a `0.1.0` Git tag before version-based installation works.
+Choose version **0.1.1** or later and add the `LoviginAnalytics` product to your app target. The repository must contain this package at its root with the corresponding version tag before version-based installation works.
 
 ## Configure
 
-Create a separate project for your app in the Lovigin dashboard, verify its associated domain, and copy its complete ingestion token. The current dashboard requires a verified domain. Screen views appear in **Page views** and **Top pages** (for example `/home`).
+In the Lovigin dashboard, either open an existing project → **Settings → Data streams → Add a stream → iOS**, or create a new project and choose **iOS** as its first resource. Enter your application's **Bundle ID** (for example `com.company.app`), copied from the app target's Bundle Identifier in Xcode. No domain or DNS verification is needed for iOS.
+
+Save the iOS stream's complete ingestion token, shown only once. Each Web or iOS stream has its own token; do not reuse a Web token in the app. The Bundle ID is a resource label, not an Apple ownership or app-integrity verification. No Apple account credentials are requested.
+
+The dashboard defaults to all streams combined. Select the iOS stream to see **Screen views** and **Top screens** (for example `/home`), separate from website views. A project's streams share retention settings but never share visitor identifiers.
 
 ```swift
 import LoviginAnalytics
 
 let analytics = LoviginAnalytics(
-    token: "<site-id>.<ingest-key>",
+    token: "<ios-stream-id>.<ingest-key>",
     screens: ["home", "settings", "pricing"]
 )
 ```
 
 Keep one instance for the application. Invalid configuration returns `nil`, never crashes the app. Names are developer-defined lowercase labels, not URLs, IDs, email addresses, user input, or dynamically generated screen titles. Only listed names are counted.
 
-An ingestion token embedded in an app is extractable. It grants write-only ingestion, not access to reports or account management. Use a dedicated project/token, rotate it if abused, and never embed an account/session credential. No SDK can hide a credential shipped inside an app.
+An ingestion token embedded in an app is extractable. It grants write-only ingestion into this stream, not access to reports or account management. Use the app's dedicated stream token, rotate it if abused, and never embed an account/session credential. Rotating one stream's token does not affect other streams. No SDK can hide a credential shipped inside an app.
 
 ## SwiftUI
 
@@ -74,4 +78,4 @@ The package includes `PrivacyInfo.xcprivacy` declaring unlinked Product Interact
 
 ## Release
 
-Upload the contents of this folder to the repository root (not inside another `sdk-ios` directory), run `swift test`, commit, then create and push tag `0.1.0`. Do not commit `.build`. No npm publication is needed.
+Upload the contents of this folder to the repository root (not inside another `sdk-ios` directory), run `swift test`, commit, then create and push tag `0.1.1`. Do not overwrite an existing `0.1.0` tag or commit `.build`. No npm publication is needed. SDK 0.1.0 also uses the compatible token/batch format; this release documents multi-stream onboarding.

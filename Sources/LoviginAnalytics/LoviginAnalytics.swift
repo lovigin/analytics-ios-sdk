@@ -2,7 +2,7 @@ import Foundation
 
 /// Aggregate screen counts. No visitor, installation, session, advertising, or device identifier.
 public actor LoviginAnalytics {
-    public static let version = "0.1.0"
+    public static let version = "0.1.1"
     private struct Row: Encodable, Sendable {
         let day: String
         let path: String
@@ -31,7 +31,7 @@ public actor LoviginAnalytics {
     private var timer: Task<Void, Never>?
 
     /// The token is a public, write-only ingestion credential in a distributed app.
-    /// Use a separate analytics project/token for the app. Never pass an owner/session token.
+    /// Use the app's dedicated iOS stream token. Never pass an owner/session or Web stream token.
     /// Returns nil for invalid configuration so analytics cannot prevent app startup.
     public init?(token: String, screens: Set<String>) {
         guard let credentials = Self.credentials(token), Self.validScreens(screens) else { return nil }
